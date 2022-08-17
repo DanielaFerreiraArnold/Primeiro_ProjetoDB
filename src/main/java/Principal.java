@@ -10,7 +10,7 @@ import java.sql.*;
 import javax.swing.JOptionPane;
 
 
-public class Principal extends JFrame {
+public class Principal extends javax.swing.JFrame {
 
     public Connection conn = null;
     public Statement stmt;
@@ -39,7 +39,7 @@ public class Principal extends JFrame {
         this.setContentPane(panel1);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
-       // initComponentes();
+        // initComponentes();
         abas.setEnabledAt(1, false); //para desabilitar uma aba (como começa com 0, e eu quero desabilitar a segunda aba, colocar 1)
 
 
@@ -64,7 +64,7 @@ public class Principal extends JFrame {
                 JOptionPane.showMessageDialog(null, sql); //exibe o conteúdo da variável string (sql) em um JOptionPane;
                 int i = 0;
                 i = stmt.executeUpdate(sql); //executando comando sql
-                stmt.close();
+//              stmt.close();
 
 //se i for maior que zero, significa que a instrução SQL foi executada corretamente, assim é exibida uma mensagem de sucesso;
                 if (i > 0) {
@@ -72,7 +72,7 @@ public class Principal extends JFrame {
                     abreTabela();
                 }
 
-            } catch (SQLException ActionEvent){
+            } catch (SQLException ActionEvent) {
                 System.out.println(e);
             }
         });
@@ -81,22 +81,23 @@ public class Principal extends JFrame {
 
             String query1 = "DELETE FROM curso WHERE (sigla=";
             String a = textSigla.getText();
-            try{
+            try {
                 String sql = query1 + "'" + textSigla.getText() + "')";
                 JOptionPane.showMessageDialog(null, sql);
                 int i = 0;
                 i = stmt.executeUpdate(sql);
-                if (i >0) {
+
+                if (i > 0) {
                     JOptionPane.showMessageDialog(null, "Curso deletado com sucesso!");
 
                     //limpando os campos
-                textSigla.setText("");
-                textNome.setText("");
-                textDescr.setText("");
-                abreTabela();
+                    textSigla.setText("");
+                    textNome.setText("");
+                    textDescr.setText("");
+                    abreTabela();
                 }
 
-            }catch (SQLException ActionEvent){
+            } catch (SQLException ActionEvent) {
                 System.out.println(e);
             }
         });
@@ -105,7 +106,7 @@ public class Principal extends JFrame {
             String query1 = "UPDATE curso SET sigla="; //atribui uma instrução SQL (seleção) a uma variável string;
             String a = textSigla.getText(); //atribui valor do campo Sigla para uma variável string;
 
-            try{
+            try {
 //Implementando instrução SQL e atribuindo o resultado a uma variável string;
                 String sql = query1 + "'"
                         + textSigla.getText() + "',"
@@ -116,25 +117,25 @@ public class Principal extends JFrame {
                         + "' where sigla="
                         + "'"
                         + textSigla.getText()
-                        +"'";
+                        + "'";
                 JOptionPane.showMessageDialog(null, sql); //Exibibe o conteúdo da variável string (sql) em um JOptionPane;
                 int i = 0;
                 i = stmt.executeUpdate(sql); //executando comando sql e atribuindo resultado a uma variável int;
                 int y = 0;
-                stmt.close();
+//                stmt.close();
                 y = stmt.CLOSE_ALL_RESULTS;
                 if (i > 0) {
                     JOptionPane.showMessageDialog(null, "Curso alterado com sucesso!");
                     abreTabela();
                 }
-            }catch (SQLException ActionEvent){
+            } catch (SQLException ActionEvent) {
                 System.out.println(e);
             }
 
         });
 
         limparCamposButton.addActionListener((ActionEvent e) -> {
- //atribuindo uma string vazia para a propriedade setText dos campos textos da aplicação
+            //atribuindo uma string vazia para a propriedade setText dos campos textos da aplicação
             textSigla.setText("");
             textNome.setText("");
             textDescr.setText("");
@@ -145,9 +146,11 @@ public class Principal extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     rs.first(); // Executa o método first do objeto rs;
+   //                 rs.next();
+  //                  getComponentListeners();
                     atualiza_campos(); //chama o método atualiza campos;
-                }catch (SQLException ActionEvent){ //caso ocorra alguma exceção, o sistema exibe o erro.
-                    System.out.println(e);
+                } catch (SQLException ActionEvent) { //caso ocorra alguma exceção, o sistema exibe o erro.
+                    System.out.println();
                 }
             }
         });
@@ -155,10 +158,10 @@ public class Principal extends JFrame {
         anteriorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
+                try {
                     rs.previous(); //Executa o método previous do objeto rs;
                     atualiza_campos(); //chama o método altualiza_campos;
-                }catch (SQLException ActionEvent){
+                } catch (SQLException ActionEvent) {
                     System.out.println(e);
                 }
             }
@@ -167,10 +170,11 @@ public class Principal extends JFrame {
         proximoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
+                try {
+
                     rs.next(); //executa o método next do objeto rs.
                     atualiza_campos();
-                }catch (SQLException ActionEvent){
+                } catch (SQLException ActionEvent) {
                     System.out.println(e);
                 }
             }
@@ -179,10 +183,11 @@ public class Principal extends JFrame {
         ultimoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
+                try {
                     rs.last();
+                    rs.next();
                     atualiza_campos();
-                }catch (SQLException ActionEvent){
+                } catch (SQLException ActionEvent) {
                     System.out.println(e);
                 }
             }
@@ -197,7 +202,7 @@ public class Principal extends JFrame {
             rs.first(); //estamos movendo o cursor para o primeiro registro pesquisado
             atualiza_campos(); //conteúdo da coluna sigla
 
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.out.println(e);
         }
     }
@@ -216,13 +221,16 @@ se deseja objetr o valor*/
         }
     }
 
-    public void Connect(){
+    public void Connect() {
+
+
         try{
             Class.forName("com.mysql.cj.jdbc.Driver"); //registra a Classe do Driver JDBC
             conn = DriverManager.getConnection("jdbc:mysql://localhost/dbaula4", "root", "123");
 //cria um objeto de conexção passando como parâmetros o enderçõ, usuario e senha do banco de dados;
             stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 //cria um objeto Statement e é por meio desse objeto que iremos executar operações no banco de dados;
+
 
         } catch (ClassNotFoundException e) {
             System.out.println(e);
@@ -231,9 +239,9 @@ se deseja objetr o valor*/
         }
     }
 
-
-    public static void main(String[] args) {
-       JFrame frame = new Principal();
-    }
+        public static void main (String[]args){
+            JFrame frame = new Principal();
+        }
 
 }
+
